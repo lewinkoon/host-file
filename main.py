@@ -18,13 +18,13 @@ class color:
 def main():
     # Menu
     choice = '0'
+    print(color.PURPLE + "\nWelcome to HF manager!\n" + color.END)
+    print("Please enter a number for what you want to do.\n")
+    print("1. Read the hosts file")
+    print("2. Remove blocked site")
+    print("3. Add new blocked site")
+    print("0. Exit\n")
     while choice == '0':
-        print(color.PURPLE + "\nWelcome to HF manager!\n" + color.END)
-        print("Please enter a number for what you want to do.\n")
-        print("1. Read the hosts file")
-        print("2. Remove blocked site")
-        print("3. Add new blocked site")
-        print("0. Exit\n")
 
         choice = input("What would you like to do?: ")
 
@@ -33,10 +33,7 @@ def main():
         with open("hosts", "r") as file:
             raw = file.readlines()
 
-        if choice == "0":
-            print("\nQuitting the program...\n")
-            quit()
-        elif choice == "3":
+        if choice == "3":
             print("\nType the site addresss you want to block.\n")
         elif choice == "2":
             print("\nType the blocked site address you want to remove\n")
@@ -45,9 +42,13 @@ def main():
             for i, str in enumerate(raw[::2]):
                 web = re.split(r'\t+', str.rstrip('\n'))[1]
                 sites.append(web)
-                print(i, web)
+                print(i, '\t' + web)
+        elif choice == "0":
+            print("\nQuitting the program...\n")
+            quit()
         else:
-            print("Please enter a valid number.")
+            print("\nPlease enter a valid number.\n")
+            choice = "0"
 
 
 # # Execution time measurement
