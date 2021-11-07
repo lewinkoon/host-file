@@ -25,7 +25,7 @@ def main():
     print("3. Remove blocked site")
     print("0. Exit\n")
 
-    while choice == '0':
+    while True:
 
         choice = input("What would you like to do?: ")
 
@@ -33,34 +33,50 @@ def main():
         sites = []
 
         if choice == "1":
-            with open("hosts", "r") as file:
-                raw = file.readlines()
             print("\nHere is the list of blocked sites\n")
-            for i, str in enumerate(raw[::2]):
-                web = re.split(r'\t+', str.rstrip('\n'))[1]
-                sites.append(web)
-                print(i, '\t' + web)
+            print(*read_file(), sep="\n")
+            break
+
         elif choice == "2":
             add_site()
+            break
+
         elif choice == "3":
-            print("\nType the blocked site address you want to remove\n")
+            input("\nType the blocked site address you want to remove: ")
+
         elif choice == "0":
             print("\nQuitting the program...\n")
             quit()
-        else:
-            print("\nPlease enter a valid number.\n")
-            choice = '0'
+
+        print("\nPlease enter a valid number.\n")
 
 
 def add_site():
     while True:
         inp = input("\nPlease, type the site addresss you want to block: ")
         if re.match('[a-zA-Z0-9]{1,256}\.[a-z]{1,6}$', inp):
-            return inp
-        print('\nInvalid format, please enter again: ')
+            if not check_site(inp):
+                with open("hosts", "a") as file:
+                    file.write("\n0.0.0.0 " + inp)
+                    file.write("\n0.0.0.0 www." + inp)
+                print("\nAdded " + color.RED + inp +
+                      color.END + " to host file.\n")
+                break
+        print('\nError, please enter again: ')
 
 
-# # Execution time measurement
-# start_time = time.time()
+def read_file():
+    with open("hosts", "r") as file:
+        raw = file.readlines()
+    sites = [x.rstrip('\n').split(" ")[1] for x in raw[::2]]
+    return sites
+
+
+def check_site(site):
+    if site in read_file():
+        return True
+    else:
+        return False
+
+
 main()
-# print("--- %s seconds ---" % (time.time() - start_time))
