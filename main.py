@@ -21,8 +21,9 @@ def main():
     print(color.PURPLE + "\nWelcome to HF manager!\n" + color.END)
     print("Please enter a number for what you want to do.\n")
     print("1. Read the hosts file")
-    print("2. Remove blocked site")
-    print("3. Add new blocked site")
+    print("2. Add new blocked site")
+    print("3. Remove blocked site")
+
     print("0. Exit\n")
     while choice == '0':
 
@@ -33,22 +34,22 @@ def main():
         with open("hosts", "r") as file:
             raw = file.readlines()
 
-        if choice == "3":
-            print("\nType the site addresss you want to block.\n")
-        elif choice == "2":
-            print("\nType the blocked site address you want to remove\n")
-        elif choice == "1":
+        if choice == "1":
             print("\nHere is the list of blocked sites\n")
             for i, str in enumerate(raw[::2]):
                 web = re.split(r'\t+', str.rstrip('\n'))[1]
                 sites.append(web)
                 print(i, '\t' + web)
+        elif choice == "2":
+            print("\nType the site addresss you want to block.\n")
+        elif choice == "3":
+            print("\nType the blocked site address you want to remove\n")
         elif choice == "0":
             print("\nQuitting the program...\n")
             quit()
         else:
             print("\nPlease enter a valid number.\n")
-            choice = "0"
+        choice = "0"
 
 
 # # Execution time measurement
