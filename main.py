@@ -103,7 +103,6 @@ def remove_site():
     with open("hosts", "w") as file:
         for line in raw:
             if inp not in line:
-                print(repr(line))
                 file.write(line)
         file.truncate(file.tell()-2)
     print("\nRemoved " + color.RED + inp +
