@@ -34,7 +34,7 @@ def main():
 
         if choice == "1":
             print("\nHere is the list of blocked sites\n")
-            print(*read_file(), sep="\n")
+            print(*list_sites(), sep="\n")
             break
 
         elif choice == "2":
@@ -42,7 +42,8 @@ def main():
             break
 
         elif choice == "3":
-            input("\nType the blocked site address you want to remove: ")
+            remove_site()
+            break
 
         elif choice == "0":
             print("\nQuitting the program...\n")
@@ -51,32 +52,63 @@ def main():
         print("\nPlease enter a valid number.\n")
 
 
-def add_site():
-    while True:
-        inp = input("\nPlease, type the site addresss you want to block: ")
-        if re.match('[a-zA-Z0-9]{1,256}\.[a-z]{1,6}$', inp):
-            if not check_site(inp):
-                with open("hosts", "a") as file:
-                    file.write("\n0.0.0.0 " + inp)
-                    file.write("\n0.0.0.0 www." + inp)
-                print("\nAdded " + color.RED + inp +
-                      color.END + " to host file.\n")
-                break
-        print('\nError, please enter again: ')
-
-
 def read_file():
     with open("hosts", "r") as file:
         raw = file.readlines()
-    sites = [x.rstrip('\n').split(" ")[1] for x in raw[::2]]
+    return raw
+
+
+def list_sites():
+    sites = [x.rstrip('\n').split(" ")[1] for x in read_file()[::2]]
     return sites
 
 
 def check_site(site):
-    if site in read_file():
-        return True
-    else:
-        return False
+    if re.match('[a-zA-Z0-9]{1,256}\.[a-z]{1,6}$', site):
+        if site in list_sites():
+            return True
+        else:
+            return False
 
 
+def add_site():
+    while True:
+        inp = input("\nPlease, type the site addresss you want to block: ")
+        if check_site(inp) == False:
+            break
+        elif check_site(inp) == True:
+            print("\nSite is already in host file.")
+            continue
+        print("\nInvalid format.")
+
+    with open("hosts", "a") as file:
+        file.write("\n0.0.0.0 " + inp)
+        file.write("\n0.0.0.0 www." + inp)
+    print("\nAdded " + color.RED + inp +
+          color.END + " to host file.\n")
+
+
+def remove_site():
+    while True:
+        inp = input("\nPlease, type the site addresss you want to remove: ")
+        if check_site(inp) == True:
+            break
+        elif check_site(inp) == False:
+            print("\nSite is not in host file.")
+            continue
+        print("\nInvalid format.")
+
+    raw = read_file()
+
+    with open("hosts", "w") as file:
+        for line in raw:
+            if inp not in line:
+                print(repr(line))
+                file.write(line)
+        file.truncate(file.tell()-2)
+    print("\nRemoved " + color.RED + inp +
+          color.END + " from host file.\n")
+
+
+# print(read_file())
 main()
